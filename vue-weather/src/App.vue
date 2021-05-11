@@ -8,18 +8,22 @@
           id=""
           class="search-bar"
           placeholder="search..."
+          v-model="query"
+          @keyup.enter="fetchWeather"
         />
       </div>
 
-      <div class="weather-wrap">
+      <div class="weather-wrap" v-if="typeof weather.main != 'undefined'">
         <div class="location-box">
-          <div class="location">Cork, Ireland</div>
-          <div class="date">Tuesday 11 May 2021</div>
+          <div class="location">
+            {{ weather.name }}, {{ weather.sys.country }}
+          </div>
+          <div class="date">{{}}</div>
         </div>
 
         <div class="weather-box">
-          <div class="temp">9°</div>
-          <div class="weather">Rain</div>
+          <div class="temp">{{ Math.round(weather.main.temp) }}°</div>
+          <div class="weather">{{ weather.weather[0].main }}</div>
         </div>
       </div>
     </main>
@@ -32,7 +36,25 @@ export default {
   data() {
     return {
       api_key: "a689aa387e68aba199413708fbb2bea9",
+      url_base: "http://api.openweathermap.org/data/2.5/",
+      query: "",
+      weather: {},
     };
+  },
+  methods: {
+    fetchWeather() {
+      fetch(
+        `${this.url_base}weather?q=${this.query}&units=metric&APPID=${this.api_key}`
+      )
+        .then((res) => {
+          return res.json();
+        })
+        .then(this.setResults);
+    },
+    setResults(results) {
+      this.weather = results;
+    },
+    dateBuilder() {},
   },
 };
 </script>
