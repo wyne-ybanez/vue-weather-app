@@ -1,5 +1,10 @@
 <template>
-  <div id="app">
+  <div
+    id="app"
+    :class="
+      typeof weather.main != 'undefined' && weather.main.temp > 16 ? 'warm' : ''
+    "
+  >
     <main>
       <div class="search-box">
         <input
@@ -18,7 +23,7 @@
           <div class="location">
             {{ weather.name }}, {{ weather.sys.country }}
           </div>
-          <div class="date">{{}}</div>
+          <div class="date">{{ dateBuilder() }}</div>
         </div>
 
         <div class="weather-box">
@@ -54,7 +59,37 @@ export default {
     setResults(results) {
       this.weather = results;
     },
-    dateBuilder() {},
+    dateBuilder() {
+      let d = new Date();
+      let months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+      let days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+      let day = days[d.getDay()];
+      let date = d.getDate();
+      let month = months[d.getMonth()];
+      let year = d.getFullYear();
+      return `${day} ${date} ${month} ${year}`;
+    },
   },
 };
 </script>
@@ -74,7 +109,11 @@ body {
   background-image: url("./assets/cold-bg.jpeg");
   background-size: cover;
   background-position: bottom;
-  transition: 0.4s;
+  transition: 0.5s;
+}
+
+#app.warm {
+  background-image: url("./assets/warm-bg.jpeg");
 }
 
 main {
